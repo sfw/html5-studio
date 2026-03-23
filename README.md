@@ -1,5 +1,7 @@
 # HTML5 Studio
 
+![HTML5 Studio](docs/images/html5-studio.png)
+
 A free, self-hosted animation studio for HTML5 display ads. Design keyframe animations in a timeline editor, manage every ad size as a scene in one project, then export production-ready ZIP packages for GDN, DV360, The Trade Desk, or any HTML5-compatible ad server.
 
 Exports are self-contained: a single ZIP per size, zero runtime dependencies, with platform-specific click tags and ad spec validation baked in. It won't let you ship a 180KB creative to a network with a 150KB limit.
