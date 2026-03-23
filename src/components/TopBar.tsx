@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
-import { Upload, Download, Save, Archive, Undo2, Redo2, Play, Settings2 } from 'lucide-react';
+import { Upload, Download, Save, Archive, Undo2, Redo2, Play, Settings2, BookOpen } from 'lucide-react';
 import { ShortcutsHelpButton } from './KeyboardShortcutsHelp';
 import type { ProjectData, ExportTarget } from '@/types/index';
 import ProjectManager from './ProjectManager';
@@ -276,6 +276,17 @@ const TopBar: React.FC<TopBarProps> = ({
             </Button>
           </TooltipTrigger>
           <TooltipContent><p>Redo (Ctrl+Shift+Z)</p></TooltipContent>
+        </Tooltip>
+
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button variant="ghost" size="icon" asChild>
+              <a href="/docs/manual.html" target="_blank" rel="noopener noreferrer">
+                <BookOpen className="h-4 w-4" />
+              </a>
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent><p>User Manual</p></TooltipContent>
         </Tooltip>
 
         <ShortcutsHelpButton onClick={onShowShortcuts} />
