@@ -1,0 +1,59 @@
+{
+  "size": "300x1050",
+  "stageSize": {
+    "width": 300,
+    "height": 1050
+  },
+  "layers": [
+    {
+      "id": "background",
+      "name": "Background",
+      "type": "color",
+      "x": 0,
+      "y": 0,
+      "width": 300,
+      "height": 1050,
+      "fill": "#f0f0f0",
+      "visible": true,
+      "opacity": 1,
+      "blendMode": "normal",
+      "locked": false
+    },
+    {
+      "id": "text",
+      "name": "Text",
+      "type": "text",
+      "content": "Discover\nAmazing\nDeals",
+      "x": 30,
+      "y": 400,
+      "width": 240,
+      "height": 250,
+      "fill": "#000000",
+      "visible": true,
+      "opacity": 1,
+      "blendMode": "normal",
+      "font": {
+        "family": "Arial",
+        "size": 52,
+        "weight": 700,
+        "style": "normal",
+        "letterSpacing": 0,
+        "lineHeight": 1.2
+      },
+      "alignment": "center",
+      "locked": false
+    }
+  ],
+  "animations": [
+    {
+      "layerId": "text",
+      "keyframes": [
+        { "frame": 0, "opacity": 0, "y": 300, "easing": "linear" },
+        { "frame": 24, "opacity": 1, "y": 400, "easing": "power2.out" }
+      ],
+      "loop": true
+    }
+  ],
+  "fps": 60,
+  "duration": 5
+} 

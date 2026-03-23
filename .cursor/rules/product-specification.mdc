@@ -1,0 +1,285 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+### 1. Project Overview and Requirements
+The web app will:
+- **Import Illustrator Files**: Parse `.ai` or `.svg` files, separating them into layers for animation.
+- **Layer-Based Animation**: Provide a canvas-based interface with controls like gotoAndStop, gotoAndPlay, looping, and tweens.
+- **Templates**: Include prebuilt animation templates for **every common Google Ads HTML5 ad size**, ensuring coverage of standard formats (e.g., banners, skyscrapers, mobile ads).
+- **Cloud Storage and Authentication**: Use **Supabase** for user authentication (email, Google OAuth), project storage (PostgreSQL database), and asset storage (file storage), with team collaboration via row-level security (RLS).
+- **Export**: Generate validated HTML5 packages compliant with Google Ads specs (e.g., 150 KB file size limit, click tags).
+- **Tech Stack**: Use **React** for the frontend, **Shadcn/ui** with **Tailwind CSS** for UI components, and **Supabase** for authentication and storage.
+
+The app will be lightweight, browser-based, and optimized for marketing teams, with comprehensive template support for Google Ads formats.
+
+---
+
+### 2. Technical Architecture (Unchanged)
+#### Frontend
+- **Framework**: React with hooks, aligning with your familiarity (March 15, 2025 conversation).
+- **Canvas Rendering**: Konva.js via `react-konva` for layer manipulation. Fabric.js as a fallback.
+- **Animation**: GSAP for tweens and controls (gotoAndStop, gotoAndPlay, looping).
+- **File Parsing**: Parse SVG files using `svg.js` or DOMParser.
+- **UI Components**: Shadcn/ui with Tailwind CSS for components, per your preference (March 9, 2025 conversation).
+- **Templates**: Expanded to cover all common Google Ads sizes (detailed below).
+- **Styling**: Tailwind CSS for consistent styling.
+
+#### Backend
+- **Server**: Node.js with Express for file uploads, Supabase integration, and HTML5 packaging.
+- **Authentication**: Supabase Auth for user login (email, Google OAuth) and role-based access.
+- **Cloud Storage**: Supabase for PostgreSQL (project metadata), file storage (SVG/PNG assets), and RLS, per your prior use (April 10, 2025 conversation).
+- **File Conversion**: ImageMagick or Inkscape CLI for `.ai` to SVG conversion.
+- **Validation**: Validate HTML5 packages using html-validator or custom scripts.
+
+#### Data Flow
+1. **Import**: User uploads `.ai` or `.svg`. App parses client-side with `svg.js` or server-side with ImageMagick/Inkscape and displays layers.
+2. **Templates**: User selects a template for a specific Google Ads size or starts from scratch.
+3. **Animation**: User animates layers on a timeline with real-time canvas preview.
+4. **Cloud Storage**: Projects are saved to Supabase, with team sharing via Supabase Auth and RLS.
+5. **Export**: App generates and validates an HTML5 package, downloadable as a ZIP.
+6. **Collaboration**: Team members access shared projects via Supabase Auth.
+
+---
+
+### 3. Key Features and Implementation
+
+#### A. Importing Illustrator Files (Unchanged)
+- **Process**:
+  1. User exports Illustrator file as SVG or uploads `.ai` for server-side conversion.
+  2. Client-side: Parse SVG with `svg.js` or DOMParser to extract `<g>` elements as layers.
+  3. Render layers on `<canvas>` using `react-konva`.
+- **Challenges**: Complex SVGs, `.ai` conversion load.
+- **Solutions**: Optimize SVGs with SVGO, provide export guide, limit layers (e.g., 50).
+
+#### B. Layer-Based Animation Studio (Unchanged)
+- **UI Components (React + Shadcn/ui)**:
+  - **Canvas Area**: `react-konva` stage for drag-and-drop layers.
+  - **Layer Panel**: Shadcn/ui `Accordion` or `Card` with `Button` toggles.
+  - **Timeline**: Custom component with `react spring` and Shadcn/ui `Slider`.
+  - **Properties Panel**: Shadcn/ui `Input`, `Select`, `Slider`.
+- **Animation Controls**: GSAP for gotoAndStop/Play, looping, tweens.
+- **Implementation**: Store data in React state, use `react-konva` and GSAP.
+- **Challenges**: Shadcn/ui customization, state-GSAP sync.
+- **Solutions**: Style with Tailwind, optimize with `useMemo`/`useCallback`.
+
+#### C. Templates (Expanded)
+- **Feature**: Prebuilt animation templates for **every common Google Ads HTML5 ad size**, ensuring users can start with optimized, customizable animations for any standard format.
+- **Common Google Ads Sizes**: Based on Google Ads documentation, the following are the most common HTML5 ad sizes (in pixels), covering banners, skyscrapers, mobile, and interstitials:
+  - **Leaderboard**: 728x90
+  - **Banner**: 468x60
+  - **Medium Rectangle**: 300x250
+  - **Large Rectangle**: 336x280
+  - **Skyscraper**: 120x600
+  - **Wide Skyscraper**: 160x600
+  - **Half Page**: 300x600
+  - **Large Leaderboard**: 970x90
+  - **Billboard**: 970x250
+  - **Square**: 250x250
+  - **Small Square**: 200x200
+  - **Mobile Banner**: 320x50
+  - **Mobile Large Banner**: 320x100
+  - **Interstitial (Mobile)**: 320x480
+  - **Interstitial (Tablet)**: 480x800
+  - **Portrait**: 300x1050
+- **Total Templates**: 16 templates (one per size), each with a predefined animation (e.g., fade-in text, sliding layers) optimized for the ad’s dimensions and typical use case (e.g., mobile banners prioritize vertical space).
+
+- **Implementation**:
+  - **Template Structure**: Store templates as JSON files in the app (e.g., `templates/728x90.json`):
+    ```json
+    {
+      "size": "728x90",
+      "width": 728,
+      "height": 90,
+      "layers": [
+        { "id": "background", "type": "image", "src": "bg.png", "x": 0, "y": 0 },
+        { "id": "text", "type": "text", "content": "Shop Now!", "x": 50, "y": 30 }
+      ],
+      "animations": [
+        {
+          "layerId": "text",
+          "keyframes": [
+            { "time": 0, "opacity": 0, "x": 50 },
+            { "time": 1, "opacity": 1, "x": 100, "easing": "Power2.easeInOut" }
+          ],
+          "loop": true
+        }
+      ]
+    }
+    ```
+  - **Template Selector UI**: Create a `<TemplateSelector />` component using Shadcn/ui `Card` and `Button` to display previews for each size. Group templates by category (e.g., Banners, Skyscrapers, Mobile) in a Shadcn/ui `Tabs` component.
+    ```jsx
+    import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+    import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+    import { Button } from "@/components/ui/button";
+
+    const templates = [
+      { size: "728x90", category: "Banners", preview: "728x90.png" },
+      // ... other sizes
+    ];
+
+    function TemplateSelector({ onSelect }) {
+      return (
+        <Tabs defaultValue="Banners">
+          <TabsList>
+            <TabsTrigger value="Banners">Banners</TabsTrigger>
+            <TabsTrigger value="Skyscrapers">Skyscrapers</TabsTrigger>
+            <TabsTrigger value="Mobile">Mobile</TabsTrigger>
+          </TabsList>
+          <TabsContent value="Banners">
+            {templates
+              .filter((t) => t.category === "Banners")
+              .map((template) => (
+                <Card key={template.size}>
+                  <CardHeader>
+                    <CardTitle>{template.size}</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <img src={template.preview} alt={`${template.size} preview`} />
+                    <Button onClick={() => onSelect(template)}>Select</Button>
+                  </CardContent>
+                </Card>
+              ))}
+          </TabsContent>
+          {/* Other categories */}
+        </Tabs>
+      );
+    }
+    ```
+  - **Loading Templates**: On selection, load the JSON into React state, setting canvas dimensions and rendering layers/animations with `react-konva` and GSAP.
+  - **Animation Types**: Each template includes a simple animation (e.g., fade-in, slide-in, scale) optimized for its size:
+    - **Banners (e.g., 728x90)**: Horizontal slide-in text or image.
+    - **Skyscrapers (e.g., 160x600)**: Vertical fade-in layers.
+    - **Mobile (e.g., 320x50)**: Compact scale-up CTA button.
+    - **Interstitials (e.g., 320x480)**: Full-screen fade-in with looping text.
+  - **Customization**: Users can modify layers, keyframes, and animations, preserving the template’s structure.
+  - **Preview Assets**: Generate static PNG previews for each template using `react-konva`’s export or a design tool, stored in the app (e.g., `public/previews/728x90.png`).
+
+- **Challenges**:
+  - Creating 16 templates with distinct, effective animations increases initial development effort.
+  - Ensuring templates are lightweight (e.g., minimal assets) to meet Google Ads’ 150 KB limit.
+  - Designing previews that accurately reflect animations in a static image.
+
+- **Solutions**:
+  - Develop templates iteratively: Start with 5 key sizes (e.g., 300x250, 728x90, 320x50, 160x600, 320x480), then add others in Phase 2.
+  - Use raster assets (PNG) for backgrounds and simple vector text for CTAs to keep file sizes low.
+  - Create previews with a single keyframe (e.g., mid-animation) and add a “Play” button to preview animations live in the selector.
+
+- **Integration with Workflow**:
+  - Templates set the canvas size (e.g., 728x90) and provide default layers/animations.
+  - Users can replace template assets with imported Illustrator layers, maintaining the animation structure.
+  - Export ensures the canvas matches the template’s size for Google Ads compliance.
+
+#### D. Cloud Storage and Authentication (Unchanged)
+- **Feature**: Save projects to Supabase with Supabase Auth for authentication and RLS for secure collaboration.
+- **Implementation**:
+  - **Authentication**: Supabase Auth for email/Google OAuth login.
+  - **Storage**: PostgreSQL for project metadata (JSON), file storage for SVG/PNG assets.
+  - **Sharing**: RLS policies to grant access by user ID or email.
+  - **UI**: Shadcn/ui `Button` for save/load, `Dialog` for sharing, `Table` for project lists.
+- **Supabase Schema** (unchanged):
+  ```sql
+  CREATE TABLE projects (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    owner_id UUID REFERENCES auth.users(id),
+    name TEXT NOT NULL,
+    animation_data JSONB NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    collaborators UUID[] DEFAULT '{}'
+  );
+  ALTER TABLE projects ENABLE ROW LEVEL SECURITY;
+  CREATE POLICY project_access ON projects
+    FOR ALL
+    USING (auth.uid() = owner_id OR auth.uid() = ANY(collaborators));
+  ```
+- **Challenges**: Asset upload limits, RLS security, email invites.
+- **Solutions**: Compress assets with `pako`/TinyPNG, test RLS, use `auth.inviteUserByEmail`.
+
+#### E. Exporting HTML5 Packages (Unchanged)
+- **Output Structure**:
+  ```
+  ad_package/
+  ├── index.html
+  ├── styles.css
+  ├── script.js
+  ├── assets/
+  │   ├── layer1.png
+  │   └── ...
+  ```
+- **Process**:
+  1. Convert SVG layers to PNG with `react-konva` or html2canvas.
+  2. Generate `index.html` with `<canvas>` and click tag.
+  3. Use GSAP in `script.js` for animations.
+  4. Bundle into ZIP with JSZip.
+- **Validation**: Check size (<150 KB), dimensions, animation length (<30s), click tags using html-validator. Display in Shadcn/ui `Table`.
+
+---
+
+### 4. Technology Stack (Unchanged)
+- **Frontend**: React, `react-konva`, GSAP, `svg.js`/DOMParser, Shadcn/ui, Tailwind CSS, JSZip, `react spring`.
+- **Backend**: Node.js/Express, Supabase (auth, PostgreSQL, file storage), ImageMagick/Inkscape CLI.
+- **Tools**: Vite, ESLint, Prettier, Vercel (per April 10, 2025 conversation).
+
+---
+
+### 5. Revised Development Plan
+#### Phase 1: Core Functionality (5-7 weeks)
+- Set up React app with Vite, Shadcn/ui, Tailwind CSS, `react-konva`.
+- Implement SVG import with `svg.js` and `.ai` conversion (ImageMagick/Inkscape).
+- Build canvas, layer panel, and timeline UI with Shadcn/ui (`Accordion`, `Slider`).
+- Enable layer manipulation (position, scale, opacity).
+
+#### Phase 2: Animation and Templates (5-6 weeks, extended for 16 templates)
+- Integrate GSAP for animation controls (gotoAndStop, gotoAndPlay, looping, tweens).
+- Create templates for 5 key Google Ads sizes (300x250, 728x90, 320x50, 160x600, 320x480) with JSON files and previews.
+- Build `<TemplateSelector />` with Shadcn/ui `Tabs` and `Card`.
+- Implement real-time preview and timeline keyframe system.
+
+#### Phase 3: Cloud Storage and Authentication (3-4 weeks)
+- Set up Supabase Auth (email, Google OAuth).
+- Configure Supabase for project storage (PostgreSQL, file storage).
+- Implement save/load and sharing UI with Shadcn/ui `Button`, `Dialog`.
+- Secure projects with RLS.
+
+#### Phase 4: Remaining Templates, Export, and Polish (4-5 weeks)
+- Create templates for remaining 11 Google Ads sizes (468x60, 336x280, 120x600, etc.).
+- Develop HTML5 export pipeline (HTML, CSS, JS, PNGs).
+- Implement validation with html-validator, display in Shadcn/ui `Table`.
+- Optimize performance, test with Illustrator files, add user guides.
+
+**Total Timeline**: ~17-22 weeks with a small team (2-3 developers, 1 designer), slightly extended for additional templates.
+
+---
+
+### 6. Templates Expansion Details
+- **Development Approach**:
+  - **Phase 2**: Focus on 5 high-priority sizes (used in ~80% of Google Ads campaigns, e.g., 300x250, 728x90), ensuring early usability.
+  - **Phase 4**: Add remaining 11 sizes, reusing animation patterns (e.g., fade-in, slide-in) with size-specific adjustments.
+  - **Design**: Collaborate with a designer to create visually distinct previews (e.g., using Figma or Adobe XD), exported as PNGs.
+- **Storage**: Store JSON templates in `src/templates/` and previews in `public/previews/`, minimizing app size.
+- **Validation**: Ensure each template’s exported package meets Google Ads specs (<150 KB, correct dimensions) during development.
+- **User Experience**: Allow filtering templates by size or category in `<TemplateSelector />`, with tooltips showing dimensions and use cases (e.g., “728x90: Ideal for desktop leaderboards”).
+
+- **Example Template Variations**:
+  - **728x90 Leaderboard**: Horizontal text slide-in, single background image, CTA button fade-in.
+  - **300x600 Half Page**: Vertical layer stack with sequential fade-ins, tall CTA.
+  - **320x50 Mobile Banner**: Compact scale-up text, minimal layers for performance.
+  - **320x480 Interstitial**: Full-screen image fade, looping text overlay.
+
+- **Connection to Prior Work**:
+  - Your experience with Google Ads (e.g., April 11, 2025 conversation on HTML5 ad validation) suggests familiarity with ad sizes like 300x250 and 728x90, which are prioritized in Phase 2.
+  - The template system aligns with your need for efficient ad creation (April 10, 2025 conversation on bulk HTML5 ad previews), providing ready-to-use starting points.
+
+---
+
+### 7. Sample Workflow for Users
+1. Log in via Supabase Auth (email or Google).
+2. Upload an SVG from Illustrator or select a template (e.g., 728x90 Leaderboard) from `<TemplateSelector />`.
+3. View layers in the canvas and Shadcn/ui layer panel.
+4. Animate layers on the timeline using Shadcn/ui `Slider` and `Input`.
+5. Save the project to Supabase and share with team members via email.
+6. Preview the animation in real-time.
+7. Export an HTML5 package, review the validation report (Shadcn/ui `Table`), and download the ZIP.
+8. Upload the ZIP to Google Ads.
+

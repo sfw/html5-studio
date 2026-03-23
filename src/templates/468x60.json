@@ -1,0 +1,59 @@
+{
+  "size": "468x60",
+  "stageSize": {
+    "width": 468,
+    "height": 60
+  },
+  "layers": [
+    {
+      "id": "background",
+      "name": "Background",
+      "type": "color",
+      "x": 0,
+      "y": 0,
+      "width": 468,
+      "height": 60,
+      "fill": "#f0f0f0",
+      "visible": true,
+      "opacity": 1,
+      "blendMode": "normal",
+      "locked": false
+    },
+    {
+      "id": "text",
+      "name": "Text",
+      "type": "text",
+      "content": "Click to Save Now!",
+      "x": 20,
+      "y": 15,
+      "width": 428,
+      "height": 30,
+      "fill": "#000000",
+      "visible": true,
+      "opacity": 1,
+      "blendMode": "normal",
+      "font": {
+        "family": "Arial",
+        "size": 20,
+        "weight": 700,
+        "style": "normal",
+        "letterSpacing": 0,
+        "lineHeight": 1.2
+      },
+      "alignment": "center",
+      "locked": false
+    }
+  ],
+  "animations": [
+    {
+      "layerId": "text",
+      "keyframes": [
+        { "frame": 0, "opacity": 0, "x": -30, "easing": "linear" },
+        { "frame": 24, "opacity": 1, "x": 20, "easing": "power2.out" }
+      ],
+      "loop": true
+    }
+  ],
+  "fps": 60,
+  "duration": 5
+} 

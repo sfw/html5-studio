@@ -1,0 +1,59 @@
+{
+  "size": "320x100",
+  "stageSize": {
+    "width": 320,
+    "height": 100
+  },
+  "layers": [
+    {
+      "id": "background",
+      "name": "Background",
+      "type": "color",
+      "x": 0,
+      "y": 0,
+      "width": 320,
+      "height": 100,
+      "fill": "#f0f0f0",
+      "visible": true,
+      "opacity": 1,
+      "blendMode": "normal",
+      "locked": false
+    },
+    {
+      "id": "text",
+      "name": "Text",
+      "type": "text",
+      "content": "Limited\nOffer",
+      "x": 20,
+      "y": 20,
+      "width": 280,
+      "height": 60,
+      "fill": "#000000",
+      "visible": true,
+      "opacity": 1,
+      "blendMode": "normal",
+      "font": {
+        "family": "Arial",
+        "size": 24,
+        "weight": 700,
+        "style": "normal",
+        "letterSpacing": 0,
+        "lineHeight": 1.2
+      },
+      "alignment": "center",
+      "locked": false
+    }
+  ],
+  "animations": [
+    {
+      "layerId": "text",
+      "keyframes": [
+        { "frame": 0, "opacity": 0, "width": 224, "height": 48, "easing": "linear" },
+        { "frame": 24, "opacity": 1, "width": 280, "height": 60, "easing": "power2.out" }
+      ],
+      "loop": true
+    }
+  ],
+  "fps": 60,
+  "duration": 5
+} 

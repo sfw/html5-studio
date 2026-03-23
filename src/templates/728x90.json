@@ -1,0 +1,59 @@
+{
+  "size": "728x90",
+  "stageSize": {
+    "width": 728,
+    "height": 90
+  },
+  "layers": [
+    {
+      "id": "background",
+      "name": "Background",
+      "type": "color",
+      "x": 0,
+      "y": 0,
+      "width": 728,
+      "height": 90,
+      "fill": "#f0f0f0",
+      "visible": true,
+      "opacity": 1,
+      "blendMode": "normal",
+      "locked": false
+    },
+    {
+      "id": "text",
+      "name": "Text",
+      "type": "text",
+      "content": "Limited Time Offer!",
+      "x": 20,
+      "y": 25,
+      "width": 688,
+      "height": 40,
+      "fill": "#000000",
+      "visible": true,
+      "opacity": 1,
+      "blendMode": "normal",
+      "font": {
+        "family": "Arial",
+        "size": 24,
+        "weight": 700,
+        "style": "normal",
+        "letterSpacing": 0,
+        "lineHeight": 1.2
+      },
+      "alignment": "center",
+      "locked": false
+    }
+  ],
+  "animations": [
+    {
+      "layerId": "text",
+      "keyframes": [
+        { "frame": 0, "opacity": 0, "x": -50, "easing": "linear" },
+        { "frame": 24, "opacity": 1, "x": 20, "easing": "power2.out" }
+      ],
+      "loop": false
+    }
+  ],
+  "fps": 60,
+  "duration": 5
+} 
