@@ -162,4 +162,4 @@ To back up your projects, copy the `data/` directory. In Docker, this is persist
 
 ## License
 
-MIT
+All rights reserved.
