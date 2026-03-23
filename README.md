@@ -162,4 +162,4 @@ To back up your projects, copy the `data/` directory. In Docker, this is persist
 
 ## License
 
-All rights reserved.
+[Elastic License 2.0 (ELv2)](LICENSE) — free to use, modify, and distribute. You may not offer it as a hosted or managed service. All rights reserved.
