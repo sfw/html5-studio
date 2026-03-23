@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HTML5 Studio — User Manual</title>
+  <style>
+    :root {
+      --bg: #ffffff;
+      --bg-alt: #f8f9fa;
+      --text: #1a1a2e;
+      --text-muted: #555;
+      --border: #e2e2e2;
+      --accent: #2563eb;
+      --accent-hover: #1d4ed8;
+      --code-bg: #f1f3f5;
+      --sidebar-w: 260px;
+      --header-h: 56px;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #0f0f14;
+        --bg-alt: #1a1a24;
+        --text: #e4e4e7;
+        --text-muted: #a1a1aa;
+        --border: #27272a;
+        --accent: #60a5fa;
+        --accent-hover: #93bbfc;
+        --code-bg: #1e1e2a;
+      }
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; scroll-padding-top: calc(var(--header-h) + 16px); }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+      font-size: 15px;
+    }
+
+    /* ── Header ── */
+    .header {
+      position: fixed; top: 0; left: 0; right: 0;
+      height: var(--header-h);
+      background: var(--bg-alt);
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; padding: 0 24px;
+      z-index: 100;
+      gap: 16px;
+    }
+    .header h1 { font-size: 18px; font-weight: 700; white-space: nowrap; }
+    .header .subtitle { font-size: 13px; color: var(--text-muted); }
+    .header .back-link {
+      margin-left: auto;
+      font-size: 13px;
+      color: var(--accent);
+      text-decoration: none;
+    }
+    .header .back-link:hover { text-decoration: underline; }
+
+    .menu-toggle {
+      display: none;
+      background: none; border: none; color: var(--text); cursor: pointer;
+      padding: 4px;
+    }
+    .menu-toggle svg { display: block; }
+
+    /* ── Sidebar ── */
+    .sidebar {
+      position: fixed; top: var(--header-h); left: 0; bottom: 0;
+      width: var(--sidebar-w);
+      overflow-y: auto;
+      background: var(--bg-alt);
+      border-right: 1px solid var(--border);
+      padding: 20px 0;
+      z-index: 90;
+    }
+    .sidebar nav a {
+      display: block;
+      padding: 6px 24px;
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 13px;
+      transition: color .15s, background .15s;
+    }
+    .sidebar nav a:hover { color: var(--accent); background: var(--bg); }
+    .sidebar nav .section-label {
+      display: block;
+      padding: 16px 24px 4px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      color: var(--text-muted);
+    }
+    .sidebar nav .section-label:first-child { padding-top: 0; }
+
+    /* ── Main Content ── */
+    .main {
+      margin-left: var(--sidebar-w);
+      margin-top: var(--header-h);
+      max-width: 780px;
+      padding: 40px 48px 120px;
+    }
+
+    h2 {
+      font-size: 24px; font-weight: 700;
+      margin: 48px 0 16px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border);
+    }
+    h2:first-child { margin-top: 0; }
+
+    h3 { font-size: 18px; font-weight: 600; margin: 32px 0 12px; }
+    h4 { font-size: 15px; font-weight: 600; margin: 24px 0 8px; }
+
+    p { margin: 0 0 12px; }
+    ul, ol { margin: 0 0 12px; padding-left: 24px; }
+    li { margin-bottom: 4px; }
+
+    code {
+      font-family: "SF Mono", "Fira Code", "Cascadia Code", monospace;
+      font-size: 13px;
+      background: var(--code-bg);
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+
+    kbd {
+      display: inline-block;
+      font-family: inherit;
+      font-size: 12px;
+      padding: 2px 7px;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      background: var(--bg-alt);
+      box-shadow: 0 1px 0 var(--border);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 0 0 16px;
+      font-size: 14px;
+    }
+    th, td {
+      text-align: left;
+      padding: 8px 12px;
+      border: 1px solid var(--border);
+    }
+    th { background: var(--bg-alt); font-weight: 600; }
+
+    .tip {
+      background: var(--bg-alt);
+      border-left: 3px solid var(--accent);
+      padding: 12px 16px;
+      margin: 16px 0;
+      border-radius: 0 6px 6px 0;
+      font-size: 14px;
+    }
+    .tip strong { display: block; margin-bottom: 4px; }
+
+    img.screenshot {
+      max-width: 100%;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      margin: 12px 0;
+    }
+
+    .shortcut-table td:first-child { white-space: nowrap; }
+
+    /* ── Responsive ── */
+    @media (max-width: 860px) {
+      .sidebar { transform: translateX(-100%); transition: transform .25s; }
+      .sidebar.open { transform: translateX(0); }
+      .main { margin-left: 0; padding: 32px 20px 100px; }
+      .menu-toggle { display: block; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── Header ── -->
+<header class="header">
+  <button class="menu-toggle" onclick="document.querySelector('.sidebar').classList.toggle('open')" aria-label="Toggle menu">
+    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 5h14M3 10h14M3 15h14"/></svg>
+  </button>
+  <h1>HTML5 Studio</h1>
+  <span class="subtitle">User Manual</span>
+  <a href="/" class="back-link">Back to Studio</a>
+</header>
+
+<!-- ── Sidebar ── -->
+<aside class="sidebar">
+  <nav>
+    <span class="section-label">Getting Started</span>
+    <a href="#overview">Overview</a>
+    <a href="#quick-start">Quick Start</a>
+    <a href="#interface-tour">Interface Tour</a>
+
+    <span class="section-label">Core Concepts</span>
+    <a href="#scenes">Scenes</a>
+    <a href="#layers">Layers</a>
+    <a href="#canvas">Canvas &amp; Editing</a>
+
+    <span class="section-label">Animation</span>
+    <a href="#keyframes">Keyframes</a>
+    <a href="#timeline">Timeline &amp; Playback</a>
+    <a href="#easing">Easing Functions</a>
+    <a href="#loops">Loops &amp; Sub-Timelines</a>
+
+    <span class="section-label">Properties</span>
+    <a href="#layer-properties">Layer Properties</a>
+    <a href="#text-properties">Text</a>
+    <a href="#gradient-properties">Gradients</a>
+    <a href="#image-properties">Images</a>
+    <a href="#blend-modes">Blend Modes</a>
+
+    <span class="section-label">Import &amp; Assets</span>
+    <a href="#svg-import">SVG / AI Import</a>
+    <a href="#asset-library">Asset Library</a>
+
+    <span class="section-label">Export</span>
+    <a href="#export-html5">Exporting HTML5</a>
+    <a href="#export-targets">Platform Targets</a>
+    <a href="#batch-export">Batch Export</a>
+    <a href="#ad-validation">Ad Spec Validation</a>
+
+    <span class="section-label">Projects</span>
+    <a href="#saving-loading">Saving &amp; Loading</a>
+    <a href="#templates">Templates</a>
+
+    <span class="section-label">Reference</span>
+    <a href="#keyboard-shortcuts">Keyboard Shortcuts</a>
+    <a href="#tips">Tips &amp; Best Practices</a>
+  </nav>
+</aside>
+
+<!-- ── Main Content ── -->
+<main class="main">
+
+<!-- ════════════════════════════ GETTING STARTED ════════════════════════════ -->
+
+<h2 id="overview">Overview</h2>
+<p>
+  HTML5 Studio is a free, self-hosted animation studio for creating HTML5 display ads.
+  Design keyframe animations in a visual timeline editor, manage every ad size as a
+  separate scene within a single project, then export production-ready ZIP packages
+  for Google Display Network, DV360, The Trade Desk, or any HTML5-compatible ad server.
+</p>
+<p>
+  Exports are fully self-contained &mdash; a single ZIP per size with zero runtime
+  dependencies, platform-specific click tags, and built-in ad spec validation. No
+  accounts, no subscriptions, no cloud required.
+</p>
+
+<h2 id="quick-start">Quick Start</h2>
+
+<h3>1. Open the app</h3>
+<p>
+  When you first open HTML5 Studio, you'll see a pre-built <strong>Meridian Bank</strong>
+  demo project with five common ad sizes. This is a great starting point for exploring the interface.
+</p>
+
+<h3>2. Choose a scene</h3>
+<p>
+  Click a tab in the <strong>Scene Tabs</strong> bar to switch between ad sizes.
+  Each scene is an independent canvas with its own layers, animation, and dimensions.
+</p>
+
+<h3>3. Edit layers</h3>
+<p>
+  Click any element on the canvas to select it. Use the <strong>Properties Panel</strong>
+  on the right to change its position, size, color, text content, and more. Drag handles
+  on the canvas to move and resize layers visually.
+</p>
+
+<h3>4. Animate</h3>
+<p>
+  Move the playhead in the <strong>Timeline</strong> to a new frame, then change a
+  layer's properties. Press <kbd>A</kbd> to add a keyframe. The layer will now animate
+  between its start and end states. Press <kbd>Space</kbd> to preview.
+</p>
+
+<h3>5. Export</h3>
+<p>
+  Click <strong>Export HTML5</strong> in the top bar. Choose your target platform in
+  the export settings dropdown, then download the ZIP. Each export is a standalone
+  HTML5 package ready for upload to an ad server.
+</p>
+
+
+<!-- ════════════════════════════ INTERFACE TOUR ════════════════════════════ -->
+
+<h2 id="interface-tour">Interface Tour</h2>
+
+<p>The interface is divided into five main areas:</p>
+
+<h3>Top Bar</h3>
+<p>
+  The toolbar across the top of the screen. From left to right:
+</p>
+<ul>
+  <li><strong>Upload SVG/AI</strong> &mdash; import vector files as layers</li>
+  <li><strong>Project Manager</strong> &mdash; load saved projects</li>
+  <li><strong>Save Project</strong> &mdash; save to the server's filesystem</li>
+  <li><strong>Preview</strong> &mdash; preview your ad in-browser before exporting</li>
+  <li><strong>Export HTML5</strong> &mdash; export the current scene as a ZIP package</li>
+  <li><strong>Export Settings</strong> (gear icon) &mdash; set filename and target platform</li>
+  <li><strong>Batch Export</strong> (archive icon) &mdash; export all scenes at once</li>
+  <li><strong>Undo / Redo</strong> &mdash; step through edit history</li>
+  <li><strong>Help</strong> &mdash; open this manual or view keyboard shortcuts</li>
+  <li><strong>Theme Toggle</strong> &mdash; switch between dark and light mode</li>
+</ul>
+
+<h3>Scene Tabs</h3>
+<p>
+  A row of tabs below the top bar, one per scene. Click to switch scenes.
+  Double-click a tab to rename it. Right-click for a context menu (rename, delete).
+  Drag tabs to reorder. Click the <strong>+</strong> button to add a new scene.
+</p>
+
+<h3>Canvas Area</h3>
+<p>
+  The central editing area where your ad is rendered. Above it is a toolbar with:
+</p>
+<ul>
+  <li><strong>Grid</strong> &mdash; toggle a grid overlay</li>
+  <li><strong>Snap to Grid</strong> &mdash; snap layers to grid lines while dragging</li>
+  <li><strong>Smart Guides</strong> &mdash; show alignment guides when moving layers near edges or centers</li>
+  <li><strong>Zoom</strong> &mdash; zoom in/out, choose a preset, or fit to window</li>
+</ul>
+
+<h3>Properties Panel</h3>
+<p>
+  The right-side panel has tabs for editing different aspects of the selected layer:
+</p>
+<ul>
+  <li><strong>Layer</strong> &mdash; position, size, rotation, opacity, type-specific options</li>
+  <li><strong>Animation</strong> &mdash; keyframes, easing, timing, loop settings</li>
+  <li><strong>Stage</strong> &mdash; scene dimensions, duration, and FPS</li>
+  <li><strong>Assets</strong> &mdash; image library shared across all scenes</li>
+  <li><strong>Templates</strong> &mdash; save/load scene templates</li>
+</ul>
+
+<h3>Timeline</h3>
+<p>
+  The bottom section showing the layer list (left) and keyframe timeline (right).
+  Playback controls (play, pause, stop, frame navigation) sit above the timeline.
+  Each layer row shows its keyframes as dots along the time ruler.
+</p>
+
+
+<!-- ════════════════════════════ CORE CONCEPTS ════════════════════════════ -->
+
+<h2 id="scenes">Scenes</h2>
+<p>
+  A <strong>scene</strong> represents a single ad size (e.g., 300&times;250, 728&times;90).
+  One project can contain many scenes, letting you manage an entire ad set in a
+  single file.
+</p>
+<ul>
+  <li><strong>Add a scene</strong> &mdash; click the <strong>+</strong> button in the scene tabs. You'll be prompted to choose a size from the built-in IAB templates or enter custom dimensions.</li>
+  <li><strong>Rename</strong> &mdash; double-click the tab label, or right-click and select "Rename."</li>
+  <li><strong>Delete</strong> &mdash; right-click the tab and select "Delete." You'll be asked to confirm.</li>
+  <li><strong>Reorder</strong> &mdash; drag tabs left or right.</li>
+</ul>
+<p>
+  Each scene has its own independent layer stack, keyframe animation, dimensions, duration, and FPS.
+</p>
+
+<h2 id="layers">Layers</h2>
+<p>
+  Layers are the building blocks of your ad. Each layer sits in a stacking order &mdash;
+  layers higher in the list appear in front.
+</p>
+
+<h3>Layer Types</h3>
+<table>
+  <tr><th>Type</th><th>Description</th></tr>
+  <tr><td>Color</td><td>A solid-color rectangle. Great for backgrounds and overlays.</td></tr>
+  <tr><td>Gradient</td><td>A linear or radial gradient fill. Supports multiple color stops.</td></tr>
+  <tr><td>Text</td><td>Editable text with font, size, weight, alignment, color, and effects (shadow, stroke).</td></tr>
+  <tr><td>Image</td><td>An uploaded raster image with fit options (contain, cover, fill).</td></tr>
+  <tr><td>Group</td><td>A container for other layers. Groups can be looped as a unit.</td></tr>
+</table>
+
+<h3>Layer Operations</h3>
+<ul>
+  <li><strong>Add</strong> &mdash; right-click in the layer list to add a new layer of any type.</li>
+  <li><strong>Select</strong> &mdash; click a layer in the list or on the canvas.</li>
+  <li><strong>Reorder</strong> &mdash; drag layers up or down in the layer list.</li>
+  <li><strong>Duplicate</strong> &mdash; <kbd>Ctrl</kbd>+<kbd>D</kbd> or right-click &gt; Duplicate.</li>
+  <li><strong>Copy / Paste</strong> &mdash; <kbd>Ctrl</kbd>+<kbd>C</kbd> to copy, <kbd>Ctrl</kbd>+<kbd>V</kbd> to paste in the current scene, <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>V</kbd> to paste into all scenes.</li>
+  <li><strong>Delete</strong> &mdash; <kbd>Delete</kbd> key or right-click &gt; Delete.</li>
+  <li><strong>Toggle Visibility</strong> &mdash; click the eye icon or press <kbd>V</kbd>.</li>
+  <li><strong>Lock</strong> &mdash; click the lock icon to prevent accidental edits.</li>
+</ul>
+
+<h2 id="canvas">Canvas &amp; Editing</h2>
+<p>
+  The canvas shows your ad at the current zoom level. Click a layer to select it.
+  Selected layers show resize handles and a rotation control.
+</p>
+<ul>
+  <li><strong>Move</strong> &mdash; drag anywhere inside the selected layer.</li>
+  <li><strong>Resize</strong> &mdash; drag a corner or edge handle.</li>
+  <li><strong>Rotate</strong> &mdash; drag the rotation handle, or type a value in the Properties Panel.</li>
+  <li><strong>Zoom</strong> &mdash; use the zoom controls in the canvas toolbar, or scroll while holding <kbd>Ctrl</kbd>/<kbd>Cmd</kbd>.</li>
+  <li><strong>Grid</strong> &mdash; toggle from the canvas toolbar. When snap-to-grid is enabled, layers will snap to grid lines as you drag.</li>
+  <li><strong>Smart Guides</strong> &mdash; when enabled, temporary alignment lines appear as you drag a layer near the edges or center of other layers or the stage.</li>
+</ul>
+
+
+<!-- ════════════════════════════ ANIMATION ════════════════════════════ -->
+
+<h2 id="keyframes">Keyframes</h2>
+<p>
+  Animation in HTML5 Studio is keyframe-based. You define how a layer should look at
+  specific points in time (keyframes), and the software interpolates smoothly between them.
+</p>
+
+<h3>Adding Keyframes</h3>
+<ol>
+  <li>Select a layer.</li>
+  <li>Move the playhead to the desired frame using the timeline slider or frame navigation buttons.</li>
+  <li>Adjust the layer's properties (position, size, opacity, rotation, etc.).</li>
+  <li>Press <kbd>A</kbd> to add a keyframe at the current frame. You'll see a dot appear on the timeline.</li>
+</ol>
+<p>
+  You can also right-click on the timeline to add a keyframe, or use the Animation tab
+  in the Properties Panel to type precise keyframe values.
+</p>
+
+<h3>Editing Keyframes</h3>
+<ul>
+  <li><strong>Select</strong> &mdash; click a keyframe dot on the timeline.</li>
+  <li><strong>Move</strong> &mdash; drag a keyframe dot left or right to change its timing.</li>
+  <li><strong>Delete</strong> &mdash; select a keyframe and press <kbd>Delete</kbd>, or right-click &gt; Delete Keyframe.</li>
+  <li><strong>Edit values</strong> &mdash; select a keyframe and use the Animation tab to adjust its property values and easing.</li>
+</ul>
+
+<h3>Animatable Properties</h3>
+<p>The following properties can be animated between keyframes:</p>
+<ul>
+  <li>Position (X, Y)</li>
+  <li>Size (Width, Height)</li>
+  <li>Scale (X, Y)</li>
+  <li>Rotation</li>
+  <li>Opacity</li>
+  <li>Font size (text layers)</li>
+  <li>Letter spacing (text layers)</li>
+</ul>
+
+<h2 id="timeline">Timeline &amp; Playback</h2>
+<p>
+  The timeline shows all layers and their keyframes along a horizontal time ruler.
+</p>
+
+<h3>Playback Controls</h3>
+<table class="shortcut-table">
+  <tr><td><kbd>Space</kbd></td><td>Play / Pause</td></tr>
+  <tr><td>Stop button</td><td>Stop playback and return to frame 0</td></tr>
+  <tr><td><kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>&larr;</kbd></td><td>Previous frame</td></tr>
+  <tr><td><kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>&rarr;</kbd></td><td>Next frame</td></tr>
+  <tr><td><kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>&larr;</kbd></td><td>Go to first frame</td></tr>
+  <tr><td><kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>&rarr;</kbd></td><td>Go to last frame</td></tr>
+</table>
+
+<h3>Duration &amp; FPS</h3>
+<p>
+  Set the scene's total duration (in seconds) and frames per second in the <strong>Stage</strong>
+  tab of the Properties Panel. A 30-second animation at 30 FPS has 900 frames. Higher FPS
+  means smoother animation but more frames to work with.
+</p>
+
+<h2 id="easing">Easing Functions</h2>
+<p>
+  Easing controls how a layer accelerates and decelerates between keyframes. Select a
+  keyframe, then choose an easing function from the dropdown in the Animation tab.
+</p>
+
+<table>
+  <tr><th>Category</th><th>Variants</th><th>Character</th></tr>
+  <tr><td>Linear</td><td>linear</td><td>Constant speed, no acceleration</td></tr>
+  <tr><td>Power 1&ndash;4</td><td>in, out, inOut</td><td>Gentle to strong curves (higher = snappier)</td></tr>
+  <tr><td>Sine</td><td>in, out, inOut</td><td>Smooth, natural motion</td></tr>
+  <tr><td>Expo</td><td>in, out, inOut</td><td>Dramatic acceleration / deceleration</td></tr>
+  <tr><td>Elastic</td><td>in, out, inOut</td><td>Springy overshoot</td></tr>
+  <tr><td>Back</td><td>in, out, inOut</td><td>Slight overshoot then settle</td></tr>
+  <tr><td>Bounce</td><td>in, out, inOut</td><td>Bouncing ball effect</td></tr>
+</table>
+
+<div class="tip">
+  <strong>Tip</strong>
+  For most display ads, <code>power2.out</code> or <code>power3.out</code> gives a polished,
+  professional feel. Use <code>elastic</code> and <code>bounce</code> sparingly &mdash;
+  they can be distracting in small ad units.
+</div>
+
+<h2 id="loops">Loops &amp; Sub-Timelines</h2>
+
+<h3>Global Loop</h3>
+<p>
+  Toggle the global loop in the Animation tab to make the entire scene repeat
+  continuously. Most ad networks require ads to stop after 30 seconds, so keep this
+  in mind during export.
+</p>
+
+<h3>Per-Layer Loops</h3>
+<p>
+  Individual layers (and groups) can have their own independent loops. Press <kbd>L</kbd>
+  or click the loop toggle in the layer list. When enabled, you can define a
+  <strong>loop window</strong> &mdash; a range of frames that repeats indefinitely
+  while the rest of the timeline plays normally.
+</p>
+<p>
+  This is perfect for effects like a pulsing CTA button or a continuously rotating
+  element while the rest of the ad plays through its narrative.
+</p>
+
+<div class="tip">
+  <strong>Example</strong>
+  Your ad is 5 seconds long. The intro text fades in over 1 second and stays put.
+  Meanwhile, the CTA button has a loop window from frame 60 to frame 90 &mdash;
+  it pulses continuously from the 2-second mark onward.
+</div>
+
+
+<!-- ════════════════════════════ PROPERTIES ════════════════════════════ -->
+
+<h2 id="layer-properties">Layer Properties</h2>
+<p>
+  Select a layer to see its properties in the right panel. All layers share these
+  common properties:
+</p>
+<ul>
+  <li><strong>Name</strong> &mdash; a label for the layer (shown in the timeline list)</li>
+  <li><strong>Position</strong> &mdash; X and Y coordinates (pixels from top-left corner of the stage)</li>
+  <li><strong>Size</strong> &mdash; width and height in pixels</li>
+  <li><strong>Rotation</strong> &mdash; degrees (0&ndash;360)</li>
+  <li><strong>Opacity</strong> &mdash; 0% (invisible) to 100% (fully opaque)</li>
+  <li><strong>Visibility</strong> &mdash; toggle whether the layer is rendered</li>
+  <li><strong>Lock</strong> &mdash; prevent selection and editing on the canvas</li>
+</ul>
+
+<h2 id="text-properties">Text</h2>
+<p>Text layers support:</p>
+<ul>
+  <li><strong>Content</strong> &mdash; the text string to display</li>
+  <li><strong>Font Family</strong> &mdash; choose from Google Fonts or system fonts</li>
+  <li><strong>Font Size</strong> &mdash; in pixels</li>
+  <li><strong>Font Weight</strong> &mdash; 100 (thin) through 900 (black)</li>
+  <li><strong>Style</strong> &mdash; normal or italic</li>
+  <li><strong>Letter Spacing</strong> &mdash; space between characters (px)</li>
+  <li><strong>Line Height</strong> &mdash; vertical spacing between lines (px)</li>
+  <li><strong>Alignment</strong> &mdash; left, center, or right</li>
+  <li><strong>Fill Color</strong> &mdash; hex, RGB, or CMYK color picker</li>
+  <li><strong>Text Effects</strong>:
+    <ul>
+      <li><strong>Shadow</strong> &mdash; color, blur radius, offset X/Y, opacity</li>
+      <li><strong>Stroke</strong> &mdash; color, width, opacity</li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="gradient-properties">Gradients</h2>
+<p>Gradient layers support two types:</p>
+<ul>
+  <li><strong>Linear Gradient</strong> &mdash; defined by start and end points. The gradient transitions along a straight line between these two points.</li>
+  <li><strong>Radial Gradient</strong> &mdash; defined by a center point and radius. The gradient radiates outward from the center.</li>
+</ul>
+<p>
+  Both types use <strong>color stops</strong> &mdash; you can add multiple stops to create
+  complex multi-color gradients. Each stop has a color and a position (0% to 100%).
+</p>
+
+<h2 id="image-properties">Images</h2>
+<p>Image layers let you upload raster images and control how they fill the layer bounds:</p>
+<table>
+  <tr><th>Fit Mode</th><th>Behavior</th></tr>
+  <tr><td>Contain</td><td>Scale to fit entirely within the bounds, preserving aspect ratio (may show gaps)</td></tr>
+  <tr><td>Cover</td><td>Scale to cover the entire bounds, preserving aspect ratio (may crop edges)</td></tr>
+  <tr><td>Fill</td><td>Stretch to exactly fill the bounds (may distort)</td></tr>
+  <tr><td>None</td><td>Display at original size, centered</td></tr>
+</table>
+
+<h2 id="blend-modes">Blend Modes</h2>
+<p>
+  Every layer has a blend mode that controls how it composites with layers below it.
+  Available modes:
+</p>
+<ul>
+  <li>Normal (default)</li>
+  <li>Multiply, Screen, Overlay</li>
+  <li>Darken, Lighten</li>
+  <li>Color Dodge, Color Burn</li>
+  <li>Hard Light, Soft Light</li>
+  <li>Difference, Exclusion</li>
+</ul>
+
+
+<!-- ════════════════════════════ IMPORT & ASSETS ════════════════════════════ -->
+
+<h2 id="svg-import">SVG / AI Import</h2>
+<p>
+  Click the <strong>Upload SVG/AI</strong> button in the top bar to import a vector
+  file. The file is parsed into editable layers.
+</p>
+<p>When importing, you'll be asked:</p>
+<ul>
+  <li><strong>Merge into current scene</strong> &mdash; adds the imported layers on top of your existing layers.</li>
+  <li><strong>Replace current scene</strong> &mdash; clears the current scene and replaces it with the imported content.</li>
+</ul>
+
+<div class="tip">
+  <strong>Tip</strong>
+  For best results, flatten complex SVG effects (filters, masks, clip paths) in your
+  vector editor before importing. Simple shapes, paths, and text import most reliably.
+</div>
+
+<h2 id="asset-library">Asset Library</h2>
+<p>
+  The <strong>Assets</strong> tab in the Properties Panel shows all unique images used
+  across every scene in your project. Each thumbnail displays a usage count.
+</p>
+<p>
+  To reuse an image from the library, select a layer on the canvas, then click the
+  <strong>+</strong> button on the desired asset thumbnail.
+</p>
+
+
+<!-- ════════════════════════════ EXPORT ════════════════════════════ -->
+
+<h2 id="export-html5">Exporting HTML5</h2>
+<p>
+  Click <strong>Export HTML5</strong> in the top bar to export the current scene.
+  The export produces a ZIP file containing:
+</p>
+<ul>
+  <li><code>index.html</code> &mdash; the ad markup</li>
+  <li><code>script.js</code> &mdash; animation logic with embedded easing functions (no external libraries)</li>
+  <li><code>styles.css</code> &mdash; layout and styling</li>
+  <li>Image assets (bundled in the ZIP)</li>
+</ul>
+<p>
+  The exported code has <strong>zero runtime dependencies</strong>. Easing functions
+  are baked directly into the JavaScript. No GSAP, no jQuery, no external CDN calls.
+</p>
+
+<h3>Export Settings</h3>
+<p>
+  Click the gear icon next to the Export button to configure:
+</p>
+<ul>
+  <li><strong>Filename</strong> &mdash; the name of the output ZIP file (default: <code>ad_package</code>)</li>
+  <li><strong>Target Platform</strong> &mdash; determines click tag format and validation rules (see <a href="#export-targets">Platform Targets</a>)</li>
+</ul>
+
+<h2 id="export-targets">Platform Targets</h2>
+
+<table>
+  <tr><th>Target</th><th>Click Tag</th><th>Max Size</th><th>Notes</th></tr>
+  <tr>
+    <td>Generic HTML5</td>
+    <td>Standard <code>clickTag</code></td>
+    <td>150 KB</td>
+    <td>IAB standard. No platform dependencies.</td>
+  </tr>
+  <tr>
+    <td>Google Display Network (GDN)</td>
+    <td><code>clickTag</code></td>
+    <td>150 KB</td>
+    <td>Self-contained, no external requests. 40-file max. 30-second loop limit.</td>
+  </tr>
+  <tr>
+    <td>DV360 / Enabler</td>
+    <td><code>Enabler.getUrl()</code></td>
+    <td>200 KB</td>
+    <td>Includes Enabler.js script tag automatically.</td>
+  </tr>
+  <tr>
+    <td>The Trade Desk</td>
+    <td><code>clickTAG</code> (capital TAG)</td>
+    <td>150 KB</td>
+    <td>Uses TTD's variable naming convention.</td>
+  </tr>
+</table>
+
+<h2 id="batch-export">Batch Export</h2>
+<p>
+  If your project has multiple scenes, click the <strong>Batch Export</strong> button
+  (archive icon) to export all scenes at once. This creates a master ZIP containing
+  individual ZIPs for each scene.
+</p>
+<p>
+  Batch export is only available when the project has more than one scene.
+</p>
+
+<h2 id="ad-validation">Ad Spec Validation</h2>
+<p>
+  Before every export, HTML5 Studio runs pre-flight validation checks against the
+  selected platform's specifications:
+</p>
+<ul>
+  <li><strong>File size</strong> &mdash; total ZIP size vs. platform limit</li>
+  <li><strong>File count</strong> &mdash; number of files in the package (GDN has a 40-file limit)</li>
+  <li><strong>Duration</strong> &mdash; animation length vs. platform loop limits</li>
+  <li><strong>External requests</strong> &mdash; flags any external resource dependencies (GDN requires fully self-contained ads)</li>
+</ul>
+<p>
+  Validation results are shown in the <strong>Export Progress</strong> modal. Warnings
+  let you know about potential issues; errors will prevent the export from completing.
+</p>
+
+
+<!-- ════════════════════════════ PROJECTS ════════════════════════════ -->
+
+<h2 id="saving-loading">Saving &amp; Loading</h2>
+
+<h3>Saving a Project</h3>
+<ul>
+  <li>Click <strong>Save Project As...</strong> to save a new project. Enter a name and click Save.</li>
+  <li>Once saved, the button changes to <strong>Save Project</strong>, which overwrites the existing save.</li>
+  <li>Use <kbd>Ctrl</kbd>+<kbd>S</kbd> (<kbd>Cmd</kbd>+<kbd>S</kbd> on Mac) to quick-save.</li>
+  <li>A timestamp (e.g., "Saved 2 minutes ago") appears in the top bar after saving.</li>
+</ul>
+
+<h3>Loading a Project</h3>
+<p>
+  Click the <strong>Project Manager</strong> button in the top bar to see all saved
+  projects. Click a project to load it. The current unsaved work will be replaced.
+</p>
+
+<h3>Data Storage</h3>
+<p>
+  Projects are stored as directories on the server's local filesystem:
+</p>
+<ul>
+  <li><code>data/projects/{uuid}/project.json</code> &mdash; project metadata and animation data</li>
+  <li><code>data/projects/{uuid}/assets/</code> &mdash; uploaded image files</li>
+</ul>
+<p>
+  To back up your projects, copy the <code>data/</code> directory. In Docker, this is
+  persisted via a named volume.
+</p>
+
+<h2 id="templates">Templates</h2>
+
+<h3>Built-in IAB Templates</h3>
+<p>
+  HTML5 Studio includes 16 built-in templates covering all standard IAB display,
+  mobile, and interstitial sizes:
+</p>
+<table>
+  <tr><th>Size</th><th>Name</th></tr>
+  <tr><td>300&times;250</td><td>Medium Rectangle</td></tr>
+  <tr><td>728&times;90</td><td>Leaderboard</td></tr>
+  <tr><td>160&times;600</td><td>Wide Skyscraper</td></tr>
+  <tr><td>300&times;600</td><td>Half Page</td></tr>
+  <tr><td>320&times;50</td><td>Mobile Banner</td></tr>
+  <tr><td>320&times;100</td><td>Large Mobile Banner</td></tr>
+  <tr><td>320&times;480</td><td>Mobile Interstitial</td></tr>
+  <tr><td>250&times;250</td><td>Square</td></tr>
+  <tr><td>336&times;280</td><td>Large Rectangle</td></tr>
+  <tr><td>970&times;90</td><td>Large Leaderboard</td></tr>
+  <tr><td>970&times;250</td><td>Billboard</td></tr>
+  <tr><td>468&times;60</td><td>Full Banner</td></tr>
+  <tr><td>120&times;600</td><td>Skyscraper</td></tr>
+  <tr><td>200&times;200</td><td>Small Square</td></tr>
+  <tr><td>300&times;1050</td><td>Portrait</td></tr>
+  <tr><td>580&times;400</td><td>Netboard</td></tr>
+</table>
+
+<h3>Custom Templates</h3>
+<p>
+  Save any scene as a reusable template from the <strong>Templates</strong> tab in the
+  Properties Panel. Custom templates preserve all layers, properties, and keyframes,
+  so you can quickly start new scenes with a consistent layout.
+</p>
+
+
+<!-- ════════════════════════════ REFERENCE ════════════════════════════ -->
+
+<h2 id="keyboard-shortcuts">Keyboard Shortcuts</h2>
+<p>On macOS, substitute <kbd>Ctrl</kbd> with <kbd>Cmd</kbd>.</p>
+
+<table class="shortcut-table">
+  <tr><th>Shortcut</th><th>Action</th></tr>
+  <tr><td><kbd>Space</kbd></td><td>Play / Pause</td></tr>
+  <tr><td><kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>&larr;</kbd></td><td>Previous frame</td></tr>
+  <tr><td><kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>&rarr;</kbd></td><td>Next frame</td></tr>
+  <tr><td><kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>&larr;</kbd></td><td>Go to first frame</td></tr>
+  <tr><td><kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>&rarr;</kbd></td><td>Go to last frame</td></tr>
+  <tr><td><kbd>V</kbd></td><td>Toggle layer visibility</td></tr>
+  <tr><td><kbd>L</kbd></td><td>Toggle layer loop</td></tr>
+  <tr><td><kbd>A</kbd></td><td>Add keyframe at current frame</td></tr>
+  <tr><td><kbd>Ctrl</kbd>+<kbd>D</kbd></td><td>Duplicate selected layer</td></tr>
+  <tr><td><kbd>Ctrl</kbd>+<kbd>C</kbd></td><td>Copy selected layer</td></tr>
+  <tr><td><kbd>Ctrl</kbd>+<kbd>V</kbd></td><td>Paste layer (current scene)</td></tr>
+  <tr><td><kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>V</kbd></td><td>Paste layer to all scenes</td></tr>
+  <tr><td><kbd>Delete</kbd></td><td>Delete selected layer</td></tr>
+  <tr><td><kbd>Ctrl</kbd>+<kbd>Z</kbd></td><td>Undo</td></tr>
+  <tr><td><kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>Z</kbd></td><td>Redo</td></tr>
+  <tr><td><kbd>Ctrl</kbd>+<kbd>S</kbd></td><td>Save project</td></tr>
+  <tr><td><kbd>?</kbd></td><td>Show keyboard shortcuts dialog</td></tr>
+</table>
+
+<h2 id="tips">Tips &amp; Best Practices</h2>
+
+<h3>Design</h3>
+<ul>
+  <li>Start with the most constrained size first (e.g., 320&times;50 mobile banner), then adapt the layout for larger sizes.</li>
+  <li>Keep text large and readable &mdash; display ads are often viewed at small sizes in cluttered pages.</li>
+  <li>Use high-contrast colors for CTA buttons so they stand out.</li>
+  <li>Limit your palette to 2&ndash;3 brand colors for visual consistency across sizes.</li>
+</ul>
+
+<h3>Animation</h3>
+<ul>
+  <li>Keep animations under 15 seconds total for the best viewer engagement.</li>
+  <li>Use the first 2&ndash;3 seconds to grab attention &mdash; many viewers will not watch the full loop.</li>
+  <li>End every ad on the CTA and brand name so they're visible even if the animation is paused.</li>
+  <li>Avoid excessive motion. Subtle easing (<code>power2.out</code>) often works better than dramatic effects.</li>
+  <li>Use per-layer loops for repeating elements (pulsing CTA, rotating icon) while keeping the main narrative linear.</li>
+</ul>
+
+<h3>Export</h3>
+<ul>
+  <li>Always check the validation results before uploading to an ad network.</li>
+  <li>Compress images before importing &mdash; the file size limit applies to the entire ZIP package.</li>
+  <li>Use batch export to quickly generate all sizes in one step.</li>
+  <li>Test exported ads in different browsers. The exported code uses standard CSS and JS, but always verify.</li>
+</ul>
+
+<h3>Project Management</h3>
+<ul>
+  <li>Save frequently with <kbd>Ctrl</kbd>+<kbd>S</kbd>.</li>
+  <li>Use descriptive project names (e.g., "Acme Spring Sale 2025" rather than "test").</li>
+  <li>Back up the <code>data/</code> directory regularly if you're self-hosting.</li>
+  <li>Save custom templates for layouts you reuse often across campaigns.</li>
+</ul>
+
+</main>
+
+</body>
+</html>
